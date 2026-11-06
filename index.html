@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sinhala Voice Typing - Type in Sinhala using your voice or keyboard. Fast, accurate, and easy to use.">
+    <title>සිංහල හඬ මුද්‍රණය | Sinhala Voice Typing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #2c5aa0;
+            --primary-orange: #ff7e00;
+            --light-blue: #e6f0ff;
+            --light-orange: #fff5eb;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 6px 12px rgba(0, 0, 0, 0.15);
+            --red: #e74c3c;
+            --green: #27ae60;
+            --purple: #8e44ad;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans Sinhal', sans-serif;
+            background-color: #ffffff;
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Ad Container Styling */
+        .ad-container {
+            text-align: center;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-orange));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .logo-text h1 {
+            font-size: 24px;
+            color: var(--primary-blue);
+            font-weight: 700;
+        }
+
+        .logo-text p {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 16px;
+        }
+
+        nav ul li a:hover {
+            color: var(--primary-blue);
+        }
+
+        /* Main Content Styles */
+        main {
+            padding: 40px 0;
+            min-height: calc(100vh - 200px);
+        }
+
+        .voice-typing-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .voice-typing-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .voice-typing-header h2 {
+            font-size: 28px;
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+        }
+
+        .voice-typing-header p {
+            color: var(--text-light);
+            font-size: 16px;
+        }
+
+        .input-mode-toggle {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+            background-color: var(--light-blue);
+            border-radius: 30px;
+            padding: 5px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .mode-button {
+            flex: 1;
+            padding: 10px 20px;
+            border: none;
+            background-color: transparent;
+            color: var(--text-dark);
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .mode-button.active {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        .microphone-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .microphone-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-orange));
+            border: none;
+            color: white;
+            font-size: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .microphone-button:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .microphone-button.recording {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(44, 90, 160, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 20px rgba(44, 90, 160, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(44, 90, 160, 0);
+            }
+        }
+
+        .status-message {
+            margin-top: 20px;
+            font-size: 16px;
+            color: var(--text-light);
+            text-align: center;
+            min-height: 24px;
+        }
+
+        .text-editor-container {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .text-editor {
+            width: 100%;
+            min-height: 300px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 18px;
+            font-family: 'Noto Sans Sinhal', sans-serif;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .text-editor:focus {
+            border-color: var(--primary-blue);
+        }
+
+        .text-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .text-info {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .char-count, .word-count {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .edit-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .edit-button {
+            padding: 8px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: white;
+            color: var(--text-dark);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .edit-button:hover {
+            background-color: var(--light-blue);
+            border-color: var(--primary-blue);
+        }
+
+        .edit-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .edit-button:disabled:hover {
+            background-color: white;
+            border-color: var(--border-color);
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .action-button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-button {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        .copy-button:hover {
+            background-color: #1e3d73;
+        }
+
+        .clear-button {
+            background-color: var(--primary-orange);
+            color: white;
+        }
+
+        .clear-button:hover {
+            background-color: #e66a00;
+        }
+
+        .download-button {
+            background-color: var(--green);
+            color: white;
+        }
+
+        .download-button:hover {
+            background-color: #229954;
+        }
+
+        .backspace-button {
+            background-color: var(--red);
+            color: white;
+        }
+
+        .backspace-button:hover {
+            background-color: #c0392b;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .close-modal:hover {
+            color: var(--text-dark);
+        }
+
+        .modal h2 {
+            color: var(--primary-blue);
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .modal p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: var(--light-blue);
+            padding: 30px 0;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .footer-links a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-orange);
+        }
+
+        .copyright {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 300;
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Confirmation Dialog */
+        .confirm-dialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 400;
+            text-align: center;
+            min-width: 300px;
+        }
+
+        .confirm-dialog h3 {
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        .confirm-dialog p {
+            margin-bottom: 20px;
+            color: var(--text-light);
+        }
+
+        .confirm-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .confirm-button {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .confirm-yes {
+            background-color: var(--red);
+            color: white;
+        }
+
+        .confirm-yes:hover {
+            background-color: #c0392b;
+        }
+
+        .confirm-no {
+            background-color: var(--border-color);
+            color: var(--text-dark);
+        }
+
+        .confirm-no:hover {
+            background-color: #ccc;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 399;
+        }
+
+        /* Keyboard Guide */
+        .keyboard-guide {
+            background-color: var(--light-orange);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .keyboard-guide h4 {
+            color: var(--primary-orange);
+            margin-bottom: 10px;
+        }
+
+        .keyboard-examples {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .example {
+            background-color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .logo {
+                margin-bottom: 15px;
+            }
+
+            nav ul {
+                margin-top: 10px;
+            }
+
+            nav ul li {
+                margin: 0 10px;
+            }
+
+            .voice-typing-header h2 {
+                font-size: 24px;
+            }
+
+            .microphone-button {
+                width: 100px;
+                height: 100px;
+                font-size: 40px;
+            }
+
+            .text-controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .action-button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .keyboard-examples {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">සි</div>
+                    <div class="logo-text">
+                        <h1>සිංහල හඬ මුද්‍රණය</h1>
+                        <p>ඔබගේ හඬින් හෝ යතුරු ලියනයෙන් සිංහලෙන් ලියන්න</p>
+                    </div>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" id="home-link">මුල් පිටුව</a></li>
+                        <li><a href="#" id="about-link">අප ගැන</a></li>
+                        <li><a href="#" id="privacy-link">පෞද්ගලිකත්ව ප්‍රතිපත්තිය</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- MULA (TOP AD) -->
+    <div class="ad-container">
+        <script type="text/javascript">
+            atOptions = {
+                'key' : '23a56f26f1aeb56b2cea9294cf3b3024',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="https://www.highrevenueformat.com/23a56f26f1aeb56b2cea9294cf3b3024/invoke.js"></script>
+    </div>
+
+    <main>
+        <div class="container">
+            <div class="voice-typing-container">
+                <div class="voice-typing-header">
+                    <h2>සිංහල හඬ හා යතුරු ලියනය</h2>
+                    <p>මයික්‍රෆෝනය බොත්තම ඔබන්න හෝ යතුරු ලියනය භාවිතා කරන්න</p>
+                </div>
+
+                <div class="input-mode-toggle">
+                    <button id="voice-mode" class="mode-button active">හඬ මුද්‍රණය</button>
+                    <button id="keyboard-mode" class="mode-button">යතුරු ලියනය</button>
+                </div>
+
+                <div class="keyboard-guide" id="keyboard-guide" style="display: none;">
+                    <h4>යතුරු ලියනය මාර්ගෝපදේශය</h4>
+                    <p>ඉංග්‍රීසි යතුරු භාවිතා කර සිංහලෙන් ලියන්න</p>
+                    <div class="keyboard-examples">
+                        <div class="example">ka → ක</div>
+                        <div class="example">kaa → කා</div>
+                        <div class="example">ki → කි</div>
+                        <div class="example">kii → කී</div>
+                        <div class="example">ku → කු</div>
+                        <div class="example">kuu → කූ</div>
+                        <div class="example">ke → කෙ</div>
+                        <div class="example">kei → කේ</div>
+                        <div class="example">ko → කො</div>
+                        <div class="example">koe → කෝ</div>
+                        <div class="example">kra → ක්‍ර</div>
+                        <div class="example">Ga → ඛ</div>
+                        <div class="example">kha → ඛ</div>
+                    </div>
+                </div>
+
+                <div class="microphone-container">
+                    <button id="microphone-btn" class="microphone-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                            <line x1="12" y1="19" x2="12" y2="23"></line>
+                            <line x1="8" y1="23" x2="16" y2="23"></line>
+                        </svg>
+                    </button>
+                    <div id="status-message" class="status-message">මයික්‍රොෆෝනය බොත්තම ඔබන්න ආරම්භ කිරීමට</div>
+                </div>
+
+                <div class="text-editor-container">
+                    <div class="text-controls">
+                        <div class="text-info">
+                            <div class="char-count">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
+                                <span id="char-count">0 අකුරු</span>
+                            </div>
+                            <div class="word-count">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 20h9"></path>
+                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                                </svg>
+                                <span id="word-count">0 වචන</span>
+                            </div>
+                        </div>
+                        <div class="edit-controls">
+                            <button id="undo-btn" class="edit-button" disabled>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 7v6h6"></path>
+                                    <path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"></path>
+                                </svg>
+                                පෙරසන්න
+                            </button>
+                            <button id="redo-btn" class="edit-button" disabled>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 7v6h-6"></path>
+                                    <path d="M3 17a9 9 0 019-9 9 9 0 016 2.3l3 2.7"></path>
+                                </svg>
+                                නැවත කරන්න
+                            </button>
+                        </div>
+                    </div>
+                    <textarea id="text-editor" class="text-editor" placeholder="මෙහි ඔබගේ සිංහල වචන පෙනෙනු ඇත..."></textarea>
+                </div>
+
+                <!-- MADA (MIDDLE AD) -->
+                <div class="ad-container">
+                    <script type="text/javascript">
+                        atOptions = {
+                            'key' : '23a56f26f1aeb56b2cea9294cf3b3024',
+                            'format' : 'iframe',
+                            'height' : 90,
+                            'width' : 728,
+                            'params' : {}
+                        };
+                    </script>
+                    <script type="text/javascript" src="https://www.highrevenueformat.com/23a56f26f1aeb56b2cea9294cf3b3024/invoke.js"></script>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="backspace-btn" class="action-button backspace-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 6h18"></path>
+                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                        </svg>
+                        අවසාන අකුර මකන්න
+                    </button>
+                    <button id="clear-last-word-btn" class="action-button" style="background-color: var(--purple); color: white;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
+                            <line x1="18" y1="9" x2="12" y2="15"></line>
+                            <line x1="12" y1="9" x2="18" y2="15"></line>
+                        </svg>
+                        අවසාන වචනය මකන්න
+                    </button>
+                    <button id="copy-btn" class="action-button copy-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        පිටපත් කරන්න
+                    </button>
+                    <button id="clear-btn" class="action-button clear-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        සියල්ල හිස් කරන්න
+                    </button>
+                    <button id="download-btn" class="action-button download-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        බාගත කරන්න
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- AGA (BOTTOM AD) -->
+    <div class="ad-container">
+        <script type="text/javascript">
+            atOptions = {
+                'key' : '23a56f26f1aeb56b2cea9294cf3b3024',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="https://www.highrevenueformat.com/23a56f26f1aeb56b2cea9294cf3b3024/invoke.js"></script>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="#" id="footer-about-link">අප ගැන</a>
+                    <a href="#" id="footer-privacy-link">පෞද්ගලිකත්ව ප්‍රතිපත්තිය</a>
+                    <a href="#" id="contact-link">සම්බන්ධ වන්න</a>
+                </div>
+                <div class="copyright">
+                    © 2023 සිංහල හඬ මුද්‍රණය. සියලු හිමිකම් ඇවිරිණි.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div id="about-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-about-modal">&times;</span>
+            <h2>අප ගැන</h2>
+            <p>
+                සිංහල හඬ මුද්‍රණය යනු ශ්‍රී ලාංකික පරිශීලකයින් සඳහා විශේෂයෙන් නිර්මාණය කරන ලද නවීන හඬ සහ යතුරු ලියන මෙවලමකි. මෙම මෙවලම භාවිතා කරමින් ඔබට ඔබගේ හඬින් හෝ ඉංග්‍රීසි යතුරු භාවිතා කර සිංහල යුනිකෝඩ් අක්ෂර වලට පරිවර්තනය කළ හැකිය.
+            </p>
+            <p>
+                අපගේ අරමුණ වන්නේ සිංහල භාෂාව ඩිජිටල් ලෝකයට පහසුවෙන් ගෙන යාමයි. මෙම මෙවලම භාවිතා කිරීමෙන් ඔබට වේගවත්ව සහ නිවැරදිව සිංහලෙන් ලිවීමට හැකියාව ලැබේ. මෙය විශේෂයෙන් පාසල් සිසුන්, වෘත්තීයවේදීන් සහ සිංහල භාෂාවෙන් ලිවීමට අවශ්‍ය සෑම අයෙකුටම ප්‍රයෝජනවත් වේ.
+            </p>
+            <p>
+                අපගේ හඬ පිළිබඳ හඳුනාගැනීමේ තාක්ෂණය ශ්‍රී ලංකාවේ භාවිතා වන සිංහල උපභාෂා සහ උච්චාරණ විලාසයන්ට අනුවර්තනය කර ඇති අතර, එමඟින් ඉහළ නිවැරදිතාවක් සහතික කරයි.
+            </p>
+            <p>
+                යතුරු ලියනය සඳහා අපි විශේෂ ට්‍රාන්ස්ලිටරේෂන් තාක්ෂණයක් භාවිතා කරන අතර, එමඟින් ඔබට ඉංග්‍රීසි යතුරු භාවිතා කර සිංහලෙන් ලිවීමට හැකිය.
+            </p>
+            <p>
+                ඔබගේ ප්‍රතිපෝෂණ සහ යෝජනා අපගේ සේවාව තවදුරටත් වැඩිදියුණු කිරීමට අපට උපකාරී වේ. කරුණාකර ඔබගේ අදහස් info@sinhalavoicetyping.lk වෙත යොමු කරන්න.
+            </p>
+        </div>
+    </div>
+
+    <div id="privacy-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-privacy-modal">&times;</span>
+            <h2>පෞද්ගලිකත්ව ප්‍රතිපත්තිය</h2>
+            <p>
+                සිංහල හඬ මුද්‍රණය වෙබ් අඩවියේ ඔබගේ පෞද්ගලිකත්වය ආරක්ෂා කිරීම අපගේ ප්‍රමුඛතාවයයි. මෙම පෞද්ගලිකත්ව ප්‍රතිපත්තිය අපගේ වෙබ් අඩවිය භාවිතා කිරීමේදී අපි ඔබගේ තොරතුරු එකතු කරන, භාවිතා කරන සහ ආරක්ෂා කරන ආකාරය පැහැදිලි කරයි.
+            </p>
+            <h3>අපි එකතු කරන තොරතුරු</h3>
+            <p>
+                සිංහල හඬ මුද්‍රණය මෙවලම භාවිතා කිරීමේදී, අපි ඔබගේ හඬ දත්ත එකතු කරනු ලැබේ. මෙම දත්ත ඔබගේ හඬ වචන පෙළක් බවට පරිවර්තනය කිරීම සඳහා පමණක් භාවිතා කරනු ලැබේ.
+            </p>
+            <h3>දත්ත භාවිතය</h3>
+            <p>
+                ඔබගේ හඬ දත්ත පරිවර්තනය කිරීම සඳහා පමණක් භාවිතා කරනු ලැබේ. අපි ඔබගේ හඬ දත්ත සුරක්ෂිතව තබන්නෙමු. අපි ඔබගේ අවසරයකින් තොරව ඔබගේ හඬ දත්ත තෙවන පාර්ශවයන්ට ලබා නොදෙන්නෙමු.
+            </p>
+            <h3>දත්ත ආරක්ෂාව</h3>
+            <p>
+                අපි ඔබගේ හඬ දත්ත ආරක්ෂා කිරීම සඳහා නවීනතම තාක්ෂණික ක්‍රම භාවිතා කරමු. අපගේ සේවාදායකයන් සුරක්ෂිතව පවතින අතර, ඔබගේ දත්ත ප්‍රවේශය සීමා කර ඇත.
+            </p>
+            <h3>කුකීස්</h3>
+            <p>
+                අපගේ වෙබ් අඩවිය භාවිතා කිරීමේදී කුකීස් භාවිතා විය හැක. කුකීස් යනු ඔබගේ බ්‍රව්සරයේ ගබඩා වන කුඩා ගොනු වන අතර, ඒවා ඔබගේ අත්දැකීම වැඩිදියුණු කිරීම සඳහා භාවිතා කරයි.
+            </p>
+            <h3>ප්‍රතිපත්තියේ වෙනස්කම්</h3>
+            <p>
+                අපි මෙම පෞද්ගලිකත්ව ප්‍රතිපත්තිය කලින් දැනුම්දීමකින් තොරව යාවත්කාලීන කළ හැකිය. ඕනෑම වෙනසක් අපගේ වෙබ් අඩවියේ ප්‍රකාශයට පත් කරනු ලැබේ.
+            </p>
+            <h3>අප සමඟ සම්බන්ධ වන්න</h3>
+            <p>
+                මෙම පෞද්ගලිකත්ව ප්‍රතිපත්තිය පිළිබඳව ඔබට ඇති ඕනෑම ප්‍රශ්නයක් හෝ සැකයක් තිබේ නම්, කරුණාකර info@sinhalavoicetyping.lk වෙත අප සමඟ සම්බන්ධ වන්න.
+            </p>
+        </div>
+    </div>
+
+    <!-- Confirmation Dialog -->
+    <div id="overlay" class="overlay"></div>
+    <div id="confirm-dialog" class="confirm-dialog">
+        <h3>තහවුරු කරන්න</h3>
+        <p id="confirm-message">ඔබට විශ්වාසද?</p>
+        <div class="confirm-buttons">
+            <button id="confirm-yes" class="confirm-button confirm-yes">ඔව්</button>
+            <button id="confirm-no" class="confirm-button confirm-no">නැත</button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // Check for browser support
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            document.getElementById('status-message').textContent = 'ඔබගේ බ්‍රව්සරය හඬ පිළිබඳ හඳුනාගැනීමට සහය නොදක්වයි. කරුණාකර Chrome හෝ Firefox භාවිතා කරන්න.';
+            document.getElementById('microphone-btn').disabled = true;
+        }
+
+        // Initialize speech recognition
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+
+        // Configure recognition
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'si-LK'; // Sinhala language, Sri Lanka
+
+        // DOM elements
+        const microphoneBtn = document.getElementById('microphone-btn');
+        const textEditor = document.getElementById('text-editor');
+        const statusMessage = document.getElementById('status-message');
+        const copyBtn = document.getElementById('copy-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const backspaceBtn = document.getElementById('backspace-btn');
+        const clearLastWordBtn = document.getElementById('clear-last-word-btn');
+        const undoBtn = document.getElementById('undo-btn');
+        const redoBtn = document.getElementById('redo-btn');
+        const charCount = document.getElementById('char-count');
+        const wordCount = document.getElementById('word-count');
+        const toast = document.getElementById('toast');
+        const confirmDialog = document.getElementById('confirm-dialog');
+        const overlay = document.getElementById('overlay');
+        const confirmMessage = document.getElementById('confirm-message');
+        const confirmYes = document.getElementById('confirm-yes');
+        const confirmNo = document.getElementById('confirm-no');
+        const voiceMode = document.getElementById('voice-mode');
+        const keyboardMode = document.getElementById('keyboard-mode');
+        const keyboardGuide = document.getElementById('keyboard-guide');
+
+        // State
+        let isRecording = false;
+        let finalTranscript = '';
+        let history = [];
+        let historyIndex = -1;
+        let confirmCallback = null;
+        let currentMode = 'voice'; // 'voice' or 'keyboard'
+        let isTyping = false;
+        let currentInput = '';
+
+        // Comprehensive English to Sinhala transliteration map
+        const transliterationMap = {
+            // Consonants with vowel signs
+            'k': 'ක', 'ka': 'ක', 'kaa': 'කා', 'kA': 'කැ', 'kAa': 'කෑ', 'ki': 'කි', 'kii': 'කී', 
+            'ku': 'කු', 'kuu': 'කූ', 'ke': 'කෙ', 'kei': 'කේ', 'ko': 'කො', 'koe': 'කෝ', 'kau': 'කෞ',
+            'kra': 'ක්‍ර', 'kraa': 'ක්‍රා', 'krA': 'ක්‍රැ', 'krAa': 'ක්‍රෑ', 'kri': 'ක්‍රි', 'krie': 'ක්‍රී',
+            'kru': 'කෘ', 'kruu': 'කෲ', 'kre': 'ක්‍රෙ', 'krei': 'ක්‍රේ', 'kro': 'ක්‍රො', 'kroe': 'ක්‍රෝ',
+            'rka': 'ර්‍ක', 'kYa': 'ක්‍ය', 'kI': 'කෛ',
+            
+            'g': 'ග', 'ga': 'ග', 'gaa': 'ගා', 'gA': 'ගැ', 'gAa': 'ගෑ', 'gi': 'ගි', 'gii': 'ගී', 
+            'gu': 'ගු', 'guu': 'ගූ', 'ge': 'ගෙ', 'gei': 'ගේ', 'go': 'ගො', 'goe': 'ගෝ', 'gau': 'ගෞ',
+            'gra': 'ග්‍ර', 'graa': 'ග්‍රා', 'grA': 'ග්‍රැ', 'grAa': 'ග්‍රෑ', 'gri': 'ග්‍රි', 'grie': 'ග්‍රී',
+            'gru': 'ගෘ', 'gruu': 'ගෲ', 'gre': 'ග්‍රෙ', 'grei': 'ග්‍රේ', 'gro': 'ග්‍රො', 'groe': 'ග්‍රෝ',
+            'rga': 'ර්‍ග', 'gYa': 'ග්‍ය', 'gI': 'ගෛ',
+            
+            'c': 'ච', 'ca': 'ච', 'caa': 'චා', 'cA': 'චැ', 'cAa': 'චෑ', 'ci': 'චි', 'cii': 'චී', 
+            'cu': 'චු', 'cuu': 'චූ', 'ce': 'චෙ', 'cei': 'චේ', 'co': 'චො', 'coe': 'චෝ', 'cau': 'චෞ',
+            'cra': 'ච්‍ර', 'craa': 'ච්‍රා', 'crA': 'ච්‍රැ', 'crAa': 'ච්‍රෑ', 'cri': 'ච්‍රි', 'crie': 'ච්‍රී',
+            'cru': 'චෘ', 'cruu': 'චෲ', 'cre': 'ච්‍රෙ', 'crei': 'ච්‍රේ', 'cro': 'ච්‍රො', 'croe': 'ච්‍රෝ',
+            'rca': 'ර්‍ච', 'cYa': 'ච්‍ය', 'cI': 'චෛ',
+            
+            'j': 'ජ', 'ja': 'ජ', 'jaa': 'ජා', 'jA': 'ජැ', 'jAa': 'ජෑ', 'ji': 'ජි', 'jii': 'ජී', 
+            'ju': 'ජු', 'juu': 'ජූ', 'je': 'ජෙ', 'jei': 'ජේ', 'jo': 'ජො', 'joe': 'ජෝ', 'jau': 'ජෞ',
+            'jra': 'ජ්‍ර', 'jraa': 'ජ්‍රා', 'jrA': 'ජ්‍රැ', 'jrAa': 'ජ්‍රෑ', 'jri': 'ජ්‍රි', 'jrie': 'ජ්‍රී',
+            'jru': 'ජෘ', 'jruu': 'ජෲ', 'jre': 'ජ්‍රෙ', 'jrei': 'ජ්‍රේ', 'jro': 'ජ්‍රො', 'jroe': 'ජ්‍රෝ',
+            'rja': 'ර්‍ජ', 'jYa': 'ජ්‍ය', 'jI': 'ජෛ',
+            
+            't': 'ට', 'ta': 'ට', 'taa': 'ටා', 'tA': 'ටැ', 'tAa': 'ටෑ', 'ti': 'ටි', 'tii': 'ටී', 
+            'tu': 'ටු', 'tuu': 'ටූ', 'te': 'ටෙ', 'tei': 'ටේ', 'to': 'ටො', 'toe': 'ටෝ', 'tau': 'ටෞ',
+            'tra': 'ට්‍ර', 'traa': 'ට්‍රා', 'trA': 'ට්‍රැ', 'trAa': 'ට්‍රෑ', 'tri': 'ට්‍රි', 'trie': 'ට්‍රී',
+            'tru': 'ටෘ', 'truu': 'ටෲ', 'tre': 'ට්‍රෙ', 'trei': 'ට්‍රේ', 'tro': 'ට්‍රො', 'troe': 'ට්‍රෝ',
+            'rta': 'ර්‍ට', 'tYa': 'ට්‍ය', 'tI': 'ටෛ',
+            
+            'd': 'ඩ', 'da': 'ඩ', 'daa': 'ඩා', 'dA': 'ඩැ', 'dAa': 'ඩෑ', 'di': 'ඩි', 'dii': 'ඩී', 
+            'du': 'ඩු', 'duu': 'ඩූ', 'de': 'ඩෙ', 'dei': 'ඩේ', 'do': 'ඩො', 'doe': 'ඩෝ', 'dau': 'ඩෞ',
+            'dra': 'ඩ්‍ර', 'draa': 'ඩ්‍රා', 'drA': 'ඩ්‍රැ', 'drAa': 'ඩ්‍රෑ', 'dri': 'ඩ්‍රි', 'drie': 'ඩ්‍රී',
+            'dru': 'ඩෘ', 'druu': 'ඩෲ', 'dre': 'ඩ්‍රෙ', 'drei': 'ඩ්‍රේ', 'dro': 'ඩ්‍රො', 'droe': 'ඩ්‍රෝ',
+            'rda': 'ර්‍ඩ', 'dYa': 'ඩ්‍ය', 'dI': 'ඩෛ',
+            
+            'n': 'න', 'na': 'න', 'naa': 'නා', 'nA': 'නැ', 'nAa': 'නෑ', 'ni': 'නි', 'nii': 'නී', 
+            'nu': 'නු', 'nuu': 'නූ', 'ne': 'නෙ', 'nei': 'නේ', 'no': 'නො', 'noe': 'නෝ', 'nau': 'නෞ',
+            'nra': 'න්‍ර', 'nraa': 'න්‍රා', 'nrA': 'න්‍රැ', 'nrAa': 'න්‍රෑ', 'nri': 'න්‍රි', 'nrie': 'න්‍රී',
+            'nru': 'නෘ', 'nruu': 'නෲ', 'nre': 'න්‍රෙ', 'nrei': 'න්‍රේ', 'nro': 'න්‍රො', 'nroe': 'න්‍රෝ',
+            'rna': 'ර්‍න', 'nYa': 'න්‍ය', 'nI': 'නෛ',
+            
+            'p': 'ප', 'pa': 'ප', 'paa': 'පා', 'pA': 'පැ', 'pAa': 'පෑ', 'pi': 'පි', 'pii': 'පී', 
+            'pu': 'පු', 'puu': 'පූ', 'pe': 'පෙ', 'pei': 'පේ', 'po': 'පො', 'poe': 'පෝ', 'pau': 'පෞ',
+            'pra': 'ප්‍ර', 'praa': 'ප්‍රා', 'prA': 'ප්‍රැ', 'prAa': 'ප්‍රෑ', 'pri': 'ප්‍රි', 'prie': 'ප්‍රී',
+            'pru': 'පෘ', 'pruu': 'පෲ', 'pre': 'ප්‍රෙ', 'prei': 'ප්‍රේ', 'pro': 'ප්‍රො', 'proe': 'ප්‍රෝ',
+            'rpa': 'ර්‍ප', 'pYa': 'ප්‍ය', 'pI': 'පෛ',
+            
+            'b': 'බ', 'ba': 'බ', 'baa': 'බා', 'bA': 'බැ', 'bAa': 'බෑ', 'bi': 'බි', 'bii': 'බී', 
+            'bu': 'බු', 'buu': 'බූ', 'be': 'බෙ', 'bei': 'බේ', 'bo': 'බො', 'boe': 'බෝ', 'bau': 'බෞ',
+            'bra': 'බ්‍ර', 'braa': 'බ්‍රා', 'brA': 'බ්‍රැ', 'brAa': 'බ්‍රෑ', 'bri': 'බ්‍රි', 'brie': 'බ්‍රී',
+            'bru': 'බෘ', 'bruu': 'බෲ', 'bre': 'බ්‍රෙ', 'brei': 'බ්‍රේ', 'bro': 'බ්‍රො', 'broe': 'බ්‍රෝ',
+            'rba': 'ර්‍බ', 'bYa': 'බ්‍ය', 'bI': 'බෛ',
+            
+            'm': 'ම', 'ma': 'ම', 'maa': 'මා', 'mA': 'මැ', 'mAa': 'මෑ', 'mi': 'මි', 'mii': 'මී', 
+            'mu': 'මු', 'muu': 'මූ', 'me': 'මෙ', 'mei': 'මේ', 'mo': 'මො', 'moe': 'මෝ', 'mau': 'මෞ',
+            'mra': 'ම්‍ර', 'mraa': 'ම්‍රා', 'mrA': 'ම්‍රැ', 'mrAa': 'ම්‍රෑ', 'mri': 'ම්‍රි', 'mrie': 'ම්‍රී',
+            'mru': 'මෘ', 'mruu': 'මෲ', 'mre': 'ම්‍රෙ', 'mrei': 'ම්‍රේ', 'mro': 'ම්‍රො', 'mroe': 'ම්‍රෝ',
+            'rma': 'ර්‍ම', 'mYa': 'ම්‍ය', 'mI': 'මෛ',
+            
+            'y': 'ය', 'ya': 'ය', 'yaa': 'යා', 'yA': 'යැ', 'yAa': 'යෑ', 'yi': 'යි', 'yii': 'යී', 
+            'yu': 'යු', 'yuu': 'යූ', 'ye': 'යෙ', 'yei': 'යේ', 'yo': 'යො', 'yoe': 'යෝ', 'yau': 'යෞ',
+            'yra': 'ය්‍ර', 'yraa': 'ය්‍රා', 'yrA': 'ය්‍රැ', 'yrAa': 'ය්‍රෑ', 'yri': 'ය්‍රි', 'yrie': 'ය්‍රී',
+            'yru': 'යෘ', 'yruu': 'යෲ', 'yre': 'ය්‍රෙ', 'yrei': 'ය්‍රේ', 'yro': 'ය්‍රො', 'yroe': 'ය්‍රෝ',
+            'rya': 'ර්‍ය', 'yYa': 'ය්‍ය', 'yI': 'යෛ',
+            
+            'r': 'ර', 'ra': 'ර', 'raa': 'රා', 'rA': 'රැ', 'rAa': 'රෑ', 'ri': 'රි', 'rii': 'රී', 
+            'ru': 'රු', 'ruu': 'රූ', 're': 'රෙ', 'rei': 'රේ', 'ro': 'රො', 'roe': 'රෝ', 'rau': 'රෞ',
+            'rra': 'ර්‍ර', 'rraa': 'ර්‍රා', 'rrA': 'ර්‍රැ', 'rrAa': 'ර්‍රෑ', 'rri': 'ර්‍රි', 'rrie': 'ර්‍රී',
+            'rru': 'රෘ', 'rruu': 'රෲ', 'rre': 'ර්‍රෙ', 'rrei': 'ර්‍රේ', 'rro': 'ර්‍රො', 'rroe': 'ර්‍රෝ',
+            'rYa': 'ර්‍ය', 'rI': 'රෛ',
+            
+            'l': 'ල', 'la': 'ල', 'laa': 'ලා', 'lA': 'ලැ', 'lAa': 'ලෑ', 'li': 'ලි', 'lii': 'ලී', 
+            'lu': 'ලු', 'luu': 'ලූ', 'le': 'ලෙ', 'lei': 'ලේ', 'lo': 'ලො', 'loe': 'ලෝ', 'lau': 'ලෞ',
+            'lra': 'ල්‍ර', 'lraa': 'ල්‍රා', 'lrA': 'ල්‍රැ', 'lrAa': 'ල්‍රෑ', 'lri': 'ල්‍රි', 'lrie': 'ල්‍රී',
+            'lru': 'ලෘ', 'lruu': 'ලෲ', 'lre': 'ල්‍රෙ', 'lrei': 'ල්‍රේ', 'lro': 'ල්‍රො', 'lroe': 'ල්‍රෝ',
+            'rla': 'ර්‍ල', 'lYa': 'ල්‍ය', 'lI': 'ලෛ',
+            
+            'v': 'ව', 'va': 'ව', 'vaa': 'වා', 'vA': 'වැ', 'vAa': 'වෑ', 'vi': 'වි', 'vii': 'වී', 
+            'vu': 'වු', 'vuu': 'වූ', 've': 'වෙ', 'vei': 'වේ', 'vo': 'වො', 'voe': 'වෝ', 'vau': 'වෞ',
+            'vra': 'ව්‍ර', 'vraa': 'ව්‍රා', 'vrA': 'ව්‍රැ', 'vrAa': 'ව්‍රෑ', 'vri': 'ව්‍රි', 'vrie': 'ව්‍රී',
+            'vru': 'වෘ', 'vruu': 'වෲ', 'vre': 'ව්‍රෙ', 'vrei': 'ව්‍රේ', 'vro': 'ව්‍රො', 'vroe': 'ව්‍රෝ',
+            'rva': 'ර්ව', 'vYa': 'ව්‍ය', 'vI': 'වෛ',
+            
+            's': 'ස', 'sa': 'ස', 'saa': 'සා', 'sA': 'සැ', 'sAa': 'සෑ', 'si': 'සි', 'sii': 'සී', 
+            'su': 'සු', 'suu': 'සූ', 'se': 'සෙ', 'sei': 'සේ', 'so': 'සො', 'soe': 'සෝ', 'sau': 'සෞ',
+            'sra': 'ස්‍ර', 'sraa': 'ස්‍රා', 'srA': 'ස්‍රැ', 'srAa': 'ස්‍රෑ', 'sri': 'ස්‍රි', 'srie': 'ස්‍රී',
+            'sru': 'සෘ', 'sruu': 'සෲ', 'sre': 'ස්‍රෙ', 'srei': 'ස්‍රේ', 'sro': 'ස්‍රො', 'sroe': 'ස්‍රෝ',
+            'rsa': 'ර්ස', 'sYa': 'ස්‍ය', 'sI': 'සෛ',
+            
+            'h': 'හ', 'ha': 'හ', 'haa': 'හා', 'hA': 'හැ', 'hAa': 'හෑ', 'hi': 'හි', 'hii': 'හී', 
+            'hu': 'හු', 'huu': 'හූ', 'he': 'හෙ', 'hei': 'හේ', 'ho': 'හො', 'hoe': 'හෝ', 'hau': 'හෞ',
+            'hra': 'හ්‍ර', 'hraa': 'හ්‍රා', 'hrA': 'හ්‍රැ', 'hrAa': 'හ්‍රෑ', 'hri': 'හ්‍රි', 'hrie': 'හ්‍රී',
+            'hru': 'හෘ', 'hruu': 'හෲ', 'hre': 'හ්‍රෙ', 'hrei': 'හ්‍රේ', 'hro': 'හ්‍රො', 'hroe': 'හ්‍රෝ',
+            'rha': 'ර්හ', 'hYa': 'හ්‍ය', 'hI': 'හෛ',
+            
+            // Special consonants
+            'Ga': 'ඛ', 'kha': 'ඛ',
+            'gha': 'ඝ', 'Ga': 'ඝ',
+            'Ch': 'ඡ',
+            'qa': 'ඣ',
+            'GNa': 'ඥ', 'KNa': 'ඤ',
+            'Ta': 'ඨ',
+            'Da': 'ඪ',
+            'tha': 'ත',
+            'Tha': 'ථ',
+            'dha': 'ද',
+            'Dha': 'ධ',
+            'Na': 'ණ',
+            'bha': 'භ',
+            'Ba': 'ඹ',
+            'sha': 'ශ',
+            'Sha': 'ෂ',
+            'fa': 'ෆ',
+            'La': 'ළ',
+            'Lu': 'ළු',
+            'LuAa': 'ළූ',
+            
+            // Vowels
+            'a': 'අ', 'aa': 'ආ', 'A': 'ඇ', 'Aa': 'ඈ',
+            'i': 'ඉ', 'ii': 'ඊ',
+            'e': 'එ', 'ea': 'ඒ',
+            'o': 'ඔ', 'oe': 'ඕ', 'oo': 'ඕ',
+            'u': 'උ', 'uu': 'ඌ',
+            
+            // Special characters
+            'x': 'ං', '\\n': 'ං',
+            'X': 'ඃ', '\\h': 'ඃ',
+            '\\N': 'ඞ',
+            'nndha': 'ඳ',
+            'nnga': 'ඟ',
+            'nnda': 'ඬ',
+            
+            // Punctuation and numbers
+            ' ': ' ', '.': '.', ',': ',', '?': '?', '!': '!',
+            '0': '0', '1': '1', '2': '2', '3': '3', '4': '4',
+            '5': '5', '6': '6', '7': '7', '8': '8', '9': '9'
+        };
+
+        // Event listeners
+        microphoneBtn.addEventListener('click', toggleRecording);
+        copyBtn.addEventListener('click', copyText);
+        clearBtn.addEventListener('click', () => confirmAction('සියලු පෙළ හිස් කරන්න ඔබට අවශ්‍යද?', clearAllText));
+        downloadBtn.addEventListener('click', downloadText);
+        backspaceBtn.addEventListener('click', deleteLastCharacter);
+        clearLastWordBtn.addEventListener('click', deleteLastWord);
+        undoBtn.addEventListener('click', undo);
+        redoBtn.addEventListener('click', redo);
+        textEditor.addEventListener('input', handleTextInput);
+        textEditor.addEventListener('keydown', handleKeyDown);
+        confirmYes.addEventListener('click', () => {
+            if (confirmCallback) confirmCallback();
+            hideConfirmDialog();
+        });
+        confirmNo.addEventListener('click', hideConfirmDialog);
+
+        // Mode toggle listeners
+        voiceMode.addEventListener('click', () => switchMode('voice'));
+        keyboardMode.addEventListener('click', () => switchMode('keyboard'));
+
+        // Recognition event handlers
+        recognition.onstart = () => {
+            statusMessage.textContent = 'දැන් කතා කරන්න...';
+            microphoneBtn.classList.add('recording');
+        };
+
+        recognition.onresult = (event) => {
+            let interimTranscript = '';
+
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                const transcript = event.results[i][0].transcript;
+                if (event.results[i].isFinal) {
+                    finalTranscript += transcript + ' ';
+                } else {
+                    interimTranscript += transcript;
+                }
+            }
+
+            textEditor.value = finalTranscript + interimTranscript;
+            updateTextInfo();
+        };
+
+        recognition.onerror = (event) => {
+            console.error('Speech recognition error:', event.error);
+            statusMessage.textContent = `දෝෂයක් සිදු විය: ${event.error}`;
+            stopRecording();
+        };
+
+        recognition.onend = () => {
+            if (isRecording) {
+                // Restart recognition if it ended unexpectedly
+                recognition.start();
+            } else {
+                stopRecording();
+            }
+        };
+
+        // Functions
+        function switchMode(mode) {
+            currentMode = mode;
+            if (mode === 'voice') {
+                voiceMode.classList.add('active');
+                keyboardMode.classList.remove('active');
+                microphoneBtn.style.display = 'flex';
+                keyboardGuide.style.display = 'none';
+                statusMessage.textContent = 'මයික්‍රොෆෝනය බොත්තම ඔබන්න ආරම්භ කිරීමට';
+                textEditor.placeholder = 'මෙහි ඔබගේ සිංහල වචන පෙනෙනු ඇත...';
+            } else {
+                voiceMode.classList.remove('active');
+                keyboardMode.classList.add('active');
+                microphoneBtn.style.display = 'none';
+                keyboardGuide.style.display = 'block';
+                statusMessage.textContent = 'ඉංග්‍රීසි යතුරු භාවිතා කර සිංහලෙන් ලියන්න';
+                textEditor.placeholder = 'මෙහි ඉංග්‍රීසි යතුරු භාවිතා කර ලියන්න...';
+                textEditor.focus();
+            }
+        }
+
+        function handleTextInput(e) {
+            if (currentMode !== 'keyboard') return;
+            
+            const text = e.target.value;
+            updateTextInfo();
+            
+            // Don't process if we're in the middle of typing
+            if (isTyping) return;
+            
+            // Get the current word for transliteration
+            const words = text.split(' ');
+            if (words.length > 0) {
+                const lastWord = words[words.length - 1];
+                const sinhalaWord = transliterate(lastWord);
+                
+                if (sinhalaWord !== lastWord) {
+                    words[words.length - 1] = sinhalaWord;
+                    isTyping = true;
+                    e.target.value = words.join(' ');
+                    // Move cursor to end
+                    e.target.setSelectionRange(e.target.value.length, e.target.value.length);
+                    isTyping = false;
+                }
+            }
+        }
+
+        function handleKeyDown(e) {
+            if (currentMode !== 'keyboard') return;
+            
+            // Save state before change for undo
+            if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Delete') {
+                setTimeout(() => saveToHistory(), 0);
+            }
+        }
+
+        function transliterate(text) {
+            if (!text) return text;
+            
+            // First, check for exact matches in the map
+            if (transliterationMap[text]) {
+                return transliterationMap[text];
+            }
+            
+            // Check for partial matches (longest first)
+            const sortedKeys = Object.keys(transliterationMap).sort((a, b) => b.length - a.length);
+            
+            let result = text;
+            for (const key of sortedKeys) {
+                if (result.includes(key)) {
+                    result = result.replace(new RegExp(key, 'g'), transliterationMap[key]);
+                }
+            }
+            
+            return result;
+        }
+
+        function toggleRecording() {
+            if (isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        }
+
+        function startRecording() {
+            isRecording = true;
+            finalTranscript = textEditor.value;
+            saveToHistory();
+            recognition.start();
+        }
+
+        function stopRecording() {
+            isRecording = false;
+            recognition.stop();
+            microphoneBtn.classList.remove('recording');
+            statusMessage.textContent = 'මයික්‍රොෆෝනය බොත්තම ඔබන්න ආරම්භ කිරීමට';
+            saveToHistory();
+        }
+
+        function copyText() {
+            if (!textEditor.value) {
+                showToast('පිටපත් කිරීමට පෙළ නොමැත');
+                return;
+            }
+
+            textEditor.select();
+            document.execCommand('copy');
+            showToast('පෙළ සාර්ථකව පිටපත් කරන ලදී');
+        }
+
+        function clearAllText() {
+            textEditor.value = '';
+            finalTranscript = '';
+            updateTextInfo();
+            saveToHistory();
+            showToast('පෙළ සාර්ථකව හිස් කරන ලදී');
+        }
+
+        function downloadText() {
+            if (!textEditor.value) {
+                showToast('බාගත කිරීමට පෙළ නොමැත');
+                return;
+            }
+
+            const text = textEditor.value;
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `sinhala-text-${new Date().toISOString().slice(0, 10)}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('පෙළ සාර්ථකව බාගත කරන ලදී');
+        }
+
+        function deleteLastCharacter() {
+            if (!textEditor.value) {
+                showToast('මකන්නට පෙළ නොමැත');
+                return;
+            }
+
+            saveToHistory();
+            const text = textEditor.value;
+            textEditor.value = text.slice(0, -1);
+            updateTextInfo();
+            showToast('අවසාන අකුර මකන ලදී');
+        }
+
+        function deleteLastWord() {
+            if (!textEditor.value) {
+                showToast('මකන්නට පෙළ නොමැත');
+                return;
+            }
+
+            saveToHistory();
+            const text = textEditor.value;
+            const words = text.trim().split(/\s+/);
+            words.pop();
+            textEditor.value = words.join(' ');
+            updateTextInfo();
+            showToast('අවසාන වචනය මකන ලදී');
+        }
+
+        function saveToHistory() {
+            const currentText = textEditor.value;
+            
+            // Remove any history after current index
+            history = history.slice(0, historyIndex + 1);
+            
+            // Add current state to history
+            history.push(currentText);
+            historyIndex++;
+            
+            // Limit history to 50 items
+            if (history.length > 50) {
+                history.shift();
+                historyIndex--;
+            }
+            
+            updateHistoryButtons();
+        }
+
+        function undo() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                textEditor.value = history[historyIndex];
+                updateTextInfo();
+                updateHistoryButtons();
+                showToast('පෙරසන ලදී');
+            }
+        }
+
+        function redo() {
+            if (historyIndex < history.length - 1) {
+                historyIndex++;
+                textEditor.value = history[historyIndex];
+                updateTextInfo();
+                updateHistoryButtons();
+                showToast('නැවත කරන ලදී');
+            }
+        }
+
+        function updateHistoryButtons() {
+            undoBtn.disabled = historyIndex <= 0;
+            redoBtn.disabled = historyIndex >= history.length - 1;
+        }
+
+        function updateTextInfo() {
+            const text = textEditor.value;
+            const chars = text.length;
+            const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+            
+            charCount.textContent = `${chars} අකුරු`;
+            wordCount.textContent = `${words} වචන`;
+        }
+
+        function confirmAction(message, callback) {
+            confirmMessage.textContent = message;
+            confirmCallback = callback;
+            confirmDialog.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+
+        function hideConfirmDialog() {
+            confirmDialog.style.display = 'none';
+            overlay.style.display = 'none';
+            confirmCallback = null;
+        }
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Modal functionality
+        const aboutModal = document.getElementById('about-modal');
+        const privacyModal = document.getElementById('privacy-modal');
+        const closeAboutModal = document.getElementById('close-about-modal');
+        const closePrivacyModal = document.getElementById('close-privacy-modal');
+
+        // Open modals
+        document.getElementById('about-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            aboutModal.style.display = 'flex';
+        });
+
+        document.getElementById('footer-about-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            aboutModal.style.display = 'flex';
+        });
+
+        document.getElementById('privacy-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            privacyModal.style.display = 'flex';
+        });
+
+        document.getElementById('footer-privacy-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            privacyModal.style.display = 'flex';
+        });
+
+        document.getElementById('contact-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            showToast('අප සමඟ info@sinhalavoicetyping.lk හරහා සම්බන්ධ වන්න');
+        });
+
+        document.getElementById('home-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Close modals
+        closeAboutModal.addEventListener('click', () => {
+            aboutModal.style.display = 'none';
+        });
+
+        closePrivacyModal.addEventListener('click', () => {
+            privacyModal.style.display = 'none';
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === aboutModal) {
+                aboutModal.style.display = 'none';
+            }
+            if (e.target === privacyModal) {
+                privacyModal.style.display = 'none';
+            }
+        });
+
+        // Initialize
+        saveToHistory();
+        updateTextInfo();
+
+        // Check for browser compatibility and show message if needed
+        window.addEventListener('load', () => {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                const browserWarning = document.createElement('div');
+                browserWarning.style.padding = '15px';
+                browserWarning.style.backgroundColor = '#ffeb3b';
+                browserWarning.style.color = '#333';
+                browserWarning.style.textAlign = 'center';
+                browserWarning.innerHTML = 'ඔබගේ බ්‍රව්සරය හඬ පිළිබඳ හඳුනාගැනීමට සහය නොදක්වයි. කරුණාකර <a href="https://www.google.com/chrome/" target="_blank">Chrome</a> හෝ <a href="https://www.mozilla.org/firefox/" target="_blank">Firefox</a> භාවිතා කරන්න.';
+                document.querySelector('main').prepend(browserWarning);
+            }
+        });
+    </script>
+</body>
+</html>
